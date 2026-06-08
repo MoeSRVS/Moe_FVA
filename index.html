@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moe | Freight VA & Truck Dispatcher</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a1628;
+    --navy-mid: #112240;
+    --steel: #1e3a5f;
+    --orange: #f97316;
+    --orange-light: #fb923c;
+    --cream: #f5f0e8;
+    --muted: #8896a8;
+    --white: #ffffff;
+    --card-bg: #0f1f38;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--navy);
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 48px;
+    background: rgba(10, 22, 40, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(249, 115, 22, 0.15);
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 3px;
+    color: var(--orange);
+  }
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--orange); }
+
+  /* HERO - Full video background */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 140px 48px 100px;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  /* VIDEO BACKGROUND */
+  .hero-video-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .hero-video-bg video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .hero-video-bg iframe {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 56.25vw;
+    min-height: 100vh;
+    min-width: 177.78vh;
+    pointer-events: none;
+    border: none;
+  }
+  .hero-video-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(10,22,40,0.88) 0%,
+      rgba(10,22,40,0.72) 50%,
+      rgba(10,22,40,0.85) 100%
+    );
+    z-index: 1;
+  }
+  .hero-video-overlay::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(249,115,22,0.10) 0%, transparent 65%);
+  }
+
+  /* Scanline texture */
+  .hero-scanlines {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background-image: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+    pointer-events: none;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 3;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .hero-scroll-hint {
+    position: absolute;
+    bottom: 36px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: bounce 2s infinite;
+  }
+  .hero-scroll-hint::after {
+    content: '↓';
+    font-size: 16px;
+    color: var(--orange);
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+
+  /* VIDEO NOTE */
+  .video-swap-note {
+    position: absolute;
+    top: 80px; right: 20px;
+    z-index: 10;
+    background: rgba(249,115,22,0.12);
+    border: 1px dashed rgba(249,115,22,0.4);
+    color: var(--orange);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    padding: 8px 14px;
+    border-radius: 2px;
+    max-width: 220px;
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  .photo-icon { font-size: 40px; opacity: 0.4; }
+  .photo-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--orange);
+    opacity: 0.7;
+  }
+  .photo-sublabel { font-size: 11px; color: var(--muted); opacity: 0.6; }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(249,115,22,0.1);
+    border: 1px solid rgba(249,115,22,0.3);
+    color: var(--orange);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    padding: 6px 14px;
+    border-radius: 2px;
+    margin-bottom: 32px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--orange);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(64px, 9vw, 100px);
+    line-height: 0.92;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+  .hero h1 span { color: var(--orange); }
+  .hero-sub {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(24px, 3.5vw, 42px);
+    letter-spacing: 4px;
+    color: var(--muted);
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+  .hero-desc {
+    font-size: 15px;
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 520px;
+    margin-bottom: 44px;
+    line-height: 1.8;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+
+  /* BUTTONS */
+  .btn-primary {
+    background: var(--orange);
+    color: var(--navy);
+    padding: 14px 32px;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: background 0.2s, transform 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-primary:hover { background: var(--orange-light); transform: translateY(-2px); }
+
+  .btn-outline {
+    border: 1px solid rgba(249,115,22,0.4);
+    color: var(--orange);
+    padding: 14px 32px;
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-outline:hover {
+    border-color: var(--orange);
+    background: rgba(249,115,22,0.08);
+    transform: translateY(-2px);
+  }
+
+  .btn-whatsapp {
+    background: #25D366;
+    color: #fff;
+    padding: 14px 32px;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: background 0.2s, transform 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-whatsapp:hover { background: #1ebe5d; transform: translateY(-2px); }
+
+  /* STATS BAR */
+  .stats-bar {
+    background: var(--card-bg);
+    border-top: 1px solid rgba(249,115,22,0.15);
+    border-bottom: 1px solid rgba(249,115,22,0.15);
+    padding: 36px 48px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+  .stat-item {
+    text-align: center;
+    padding: 0 16px;
+    border-right: 1px solid rgba(255,255,255,0.06);
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    color: var(--orange);
+    letter-spacing: 2px;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* SECTIONS */
+  section { padding: 100px 48px; }
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--orange);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    max-width: 60px;
+    height: 1px;
+    background: var(--orange);
+    opacity: 0.4;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 6vw, 72px);
+    letter-spacing: 2px;
+    line-height: 1;
+    margin-bottom: 60px;
+  }
+
+  /* ABOUT */
+  .about-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+  .about-photo-wrap { position: relative; }
+  .about-photo {
+    width: 280px;
+    height: 340px;
+    border: 2px solid rgba(249,115,22,0.3);
+    border-radius: 4px;
+    object-fit: cover;
+    display: block;
+    background: var(--card-bg);
+  }
+  .about-photo-placeholder {
+    width: 280px;
+    height: 340px;
+    border: 2px dashed rgba(249,115,22,0.4);
+    border-radius: 4px;
+    background: var(--card-bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  .about-photo-placeholder::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(249,115,22,0.05) 0%, transparent 60%);
+  }
+  .about-corner-br {
+    position: absolute;
+    bottom: -8px; right: -8px;
+    width: 50px; height: 50px;
+    border-right: 2px solid var(--orange);
+    border-bottom: 2px solid var(--orange);
+    opacity: 0.5;
+  }
+  .about-corner-tl {
+    position: absolute;
+    top: -8px; left: -8px;
+    width: 50px; height: 50px;
+    border-left: 2px solid var(--orange);
+    border-top: 2px solid var(--orange);
+    opacity: 0.5;
+  }
+  .about-text h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+  .about-text h3 span { color: var(--orange); }
+  .about-role {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--orange);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .about-text p {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.9;
+    margin-bottom: 16px;
+    font-weight: 300;
+  }
+  .about-highlights {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 24px;
+  }
+  .highlight-item {
+    background: var(--card-bg);
+    border: 1px solid rgba(249,115,22,0.15);
+    padding: 14px 18px;
+    border-radius: 2px;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .highlight-item span { color: var(--orange); font-size: 16px; }
+
+  /* SERVICES */
+  .services { background: var(--navy-mid); }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2px;
+  }
+  .service-card {
+    background: var(--card-bg);
+    padding: 40px 36px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s;
+    cursor: default;
+  }
+  .service-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 0;
+    background: var(--orange);
+    transition: height 0.3s;
+  }
+  .service-card:hover::before { height: 100%; }
+  .service-card:hover { transform: translateX(4px); }
+  .service-icon { font-size: 32px; margin-bottom: 20px; display: block; }
+  .service-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 2px;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+  .service-desc { font-size: 14px; color: var(--muted); line-height: 1.8; margin-bottom: 20px; }
+  .service-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tag {
+    background: rgba(249,115,22,0.08);
+    border: 1px solid rgba(249,115,22,0.2);
+    color: var(--orange);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 2px;
+  }
+
+  /* SKILLS */
+  .skills-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+  .skill-group { margin-bottom: 36px; }
+  .skill-group-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--orange);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .skill-item { margin-bottom: 14px; }
+  .skill-name-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--cream);
+  }
+  .skill-pct { color: var(--orange); font-family: 'DM Mono', monospace; font-size: 12px; }
+  .skill-bar { height: 2px; background: rgba(255,255,255,0.06); border-radius: 1px; overflow: hidden; }
+  .skill-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--orange), var(--orange-light));
+    border-radius: 1px;
+    animation: fillBar 1.2s ease both;
+    transform-origin: left;
+  }
+  @keyframes fillBar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+  .tools-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .tool-item {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 14px 18px;
+    border-radius: 2px;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: border-color 0.2s;
+  }
+  .tool-item:hover { border-color: rgba(249,115,22,0.3); }
+  .tool-dot { width: 6px; height: 6px; background: var(--orange); border-radius: 50%; flex-shrink: 0; }
+
+  /* PIPELINE */
+  .pipeline { background: var(--navy-mid); }
+  .pipeline-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0;
+    position: relative;
+  }
+  .pipeline-step { padding: 32px 24px; text-align: center; position: relative; }
+  .pipeline-step::after {
+    content: '→';
+    position: absolute;
+    right: -10px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--orange);
+    font-size: 20px;
+    opacity: 0.4;
+  }
+  .pipeline-step:last-child::after { display: none; }
+  .step-num { font-family: 'Bebas Neue', sans-serif; font-size: 48px; color: rgba(249,115,22,0.15); line-height: 1; margin-bottom: 8px; }
+  .step-title { font-weight: 600; font-size: 13px; color: var(--white); margin-bottom: 6px; letter-spacing: 0.5px; }
+  .step-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  /* TRAINING */
+  .training-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+  .training-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 36px;
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+  .training-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--orange), transparent);
+  }
+  .training-badge {
+    display: inline-block;
+    background: rgba(249,115,22,0.1);
+    border: 1px solid rgba(249,115,22,0.25);
+    color: var(--orange);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    padding: 4px 10px;
+    margin-bottom: 20px;
+    border-radius: 2px;
+  }
+  .training-name { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 1.5px; margin-bottom: 8px; }
+  .training-school { font-size: 13px; color: var(--orange); font-weight: 500; margin-bottom: 16px; }
+  .training-list { list-style: none; font-size: 13px; color: var(--muted); line-height: 1.9; }
+  .training-list li::before { content: '— '; color: var(--orange); opacity: 0.6; }
+
+  /* CONTACT */
+  .contact { background: var(--navy-mid); }
+  .contact-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .contact-photo-wrap { position: relative; }
+  .contact-photo-placeholder {
+    width: 100%;
+    height: 360px;
+    border: 2px dashed rgba(249,115,22,0.4);
+    border-radius: 4px;
+    background: var(--card-bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+  .contact-photo-placeholder::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(249,115,22,0.05) 0%, transparent 60%);
+  }
+  .contact-corner-br {
+    position: absolute;
+    bottom: -8px; right: -8px;
+    width: 50px; height: 50px;
+    border-right: 2px solid var(--orange);
+    border-bottom: 2px solid var(--orange);
+    opacity: 0.5;
+  }
+  .contact-corner-tl {
+    position: absolute;
+    top: -8px; left: -8px;
+    width: 50px; height: 50px;
+    border-left: 2px solid var(--orange);
+    border-top: 2px solid var(--orange);
+    opacity: 0.5;
+  }
+  .contact-text .section-label { justify-content: flex-start; }
+  .contact-note { font-size: 14px; color: var(--muted); margin-bottom: 36px; line-height: 1.9; font-weight: 300; }
+  .contact-cta-stack { display: flex; flex-direction: column; gap: 14px; }
+  .contact-email-display {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+  .contact-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 28px;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--navy);
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding: 28px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 3px; color: var(--orange); }
+
+  /* VIDEO UPLOAD ZONE */
+  .video-upload-zone {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10,22,40,0.75);
+    backdrop-filter: blur(2px);
+    transition: opacity 0.4s;
+  }
+  .video-upload-zone.hidden { display: none; }
+  .vuz-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    background: var(--card-bg);
+    border: 2px dashed rgba(249,115,22,0.5);
+    border-radius: 8px;
+    padding: 40px 48px;
+    max-width: 460px;
+    text-align: center;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .vuz-inner.drag-over {
+    border-color: var(--orange);
+    background: rgba(249,115,22,0.08);
+  }
+  .vuz-icon { font-size: 44px; }
+  .vuz-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 2px;
+    color: var(--white);
+  }
+  .vuz-sub { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .vuz-btn {
+    background: var(--orange);
+    color: var(--navy);
+    border: none;
+    padding: 12px 28px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 1px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 4px;
+  }
+  .vuz-btn:hover { background: var(--orange-light); }
+  .vuz-or { font-size: 11px; color: var(--muted); letter-spacing: 1px; margin: 4px 0; }
+  .vuz-yt-row { display: flex; gap: 8px; width: 100%; }
+  .vuz-input {
+    flex: 1;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--cream);
+    padding: 10px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    border-radius: 2px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .vuz-input:focus { border-color: rgba(249,115,22,0.4); }
+  .vuz-input::placeholder { color: var(--muted); opacity: 0.6; }
+  .vuz-apply-btn {
+    background: rgba(249,115,22,0.15);
+    border: 1px solid rgba(249,115,22,0.4);
+    color: var(--orange);
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .vuz-apply-btn:hover { background: rgba(249,115,22,0.25); }
+
+  /* Remove video btn */
+  .video-remove-btn {
+    position: absolute;
+    top: 80px; right: 20px;
+    z-index: 10;
+    background: rgba(10,22,40,0.8);
+    border: 1px solid rgba(249,115,22,0.3);
+    color: var(--orange);
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 1px;
+    padding: 8px 14px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .video-remove-btn:hover { background: rgba(249,115,22,0.15); }
+
+  /* CROSS PROMO */
+  .crosspromo {
+    background: var(--navy);
+    padding: 100px 48px;
+    border-top: 1px solid rgba(249,115,22,0.15);
+    position: relative;
+    overflow: hidden;
+  }
+  .crosspromo::before {
+    content: 'MOE_SRVS';
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 200px;
+    color: rgba(249,115,22,0.03);
+    letter-spacing: 12px;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .crosspromo-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .crosspromo-top {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .crosspromo-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 6vw, 72px);
+    letter-spacing: 2px;
+    line-height: 1;
+    margin-bottom: 20px;
+  }
+  .crosspromo-title span { color: var(--orange); }
+  .crosspromo-sub {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.8;
+    font-weight: 300;
+  }
+
+  /* Search mock */
+  .crosspromo-search-box {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 56px;
+  }
+  .search-mock {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--card-bg);
+    border: 1px solid rgba(249,115,22,0.3);
+    border-radius: 40px;
+    padding: 16px 32px;
+    position: relative;
+    animation: searchGlow 3s ease-in-out infinite;
+  }
+  @keyframes searchGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(249,115,22,0); }
+    50% { box-shadow: 0 0 24px 4px rgba(249,115,22,0.12); }
+  }
+  .search-icon { font-size: 18px; }
+  .search-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+  .search-highlight {
+    color: var(--orange);
+    font-weight: 500;
+  }
+  .search-pulse {
+    width: 8px; height: 8px;
+    background: var(--orange);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+
+  /* Service cards */
+  .crosspromo-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+  .xcard {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 2px;
+    padding: 28px 24px;
+    text-decoration: none;
+    color: var(--cream);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.25s, transform 0.25s, background 0.25s;
+  }
+  .xcard::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 0;
+    background: rgba(249,115,22,0.06);
+    transition: height 0.3s;
+  }
+  .xcard:hover { border-color: rgba(249,115,22,0.35); transform: translateY(-4px); }
+  .xcard:hover::before { height: 100%; }
+  .xcard-icon { font-size: 28px; margin-bottom: 4px; }
+  .xcard-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 1.5px;
+    color: var(--white);
+    line-height: 1.1;
+  }
+  .xcard-desc { font-size: 12px; color: var(--muted); line-height: 1.6; flex: 1; }
+  .xcard-arrow {
+    font-size: 18px;
+    color: var(--orange);
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    align-self: flex-end;
+  }
+  .xcard:hover .xcard-arrow { opacity: 1; transform: translateX(4px); }
+
+  /* CTA row */
+  .crosspromo-cta-row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .hero { padding: 120px 24px 80px; text-align: center; }
+    .hero-content { max-width: 100%; }
+    .video-swap-note { display: none; }
+    .about-layout { grid-template-columns: 1fr; }
+    .about-photo-placeholder { width: 100%; height: 260px; }
+    .contact-inner { grid-template-columns: 1fr; gap: 48px; }
+    .contact-photo-placeholder { height: 260px; }
+    .skills-layout { grid-template-columns: 1fr; gap: 40px; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    section { padding: 70px 24px; }
+    .stats-bar { grid-template-columns: repeat(2, 1fr); padding: 28px 24px; }
+    .stat-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 20px; }
+    footer { flex-direction: column; gap: 12px; text-align: center; }
+    .about-highlights { grid-template-columns: 1fr; }
+    .crosspromo { padding: 70px 24px; }
+    .crosspromo::before { display: none; }
+    .crosspromo-cards { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .crosspromo-cta-row { flex-direction: column; align-items: stretch; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">MOE // FVA</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#training">Training</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+
+  <!-- ========================================
+       BACKGROUND VIDEO ZONE
+       HOW TO ADD YOUR VIDEO:
+       Option A — Local file: Put your .mp4 in the same folder,
+                  then change data-src="your-video.mp4" below
+       Option B — YouTube: Change the video ID in the iframe src
+       ======================================== -->
+
+  <div class="hero-video-bg" id="videoBg">
+
+    <!-- LOCAL VIDEO (shown when uploaded via the upload button) -->
+    <video id="heroVideo" autoplay muted loop playsinline style="display:none;">
+      <source id="heroVideoSrc" src="" type="video/mp4">
+    </video>
+
+    <!-- YOUTUBE FALLBACK (shown when no local video is set) -->
+    <iframe id="heroYT"
+      src="https://www.youtube.com/embed/MnDhAKfTYvw?autoplay=1&mute=1&loop=1&playlist=MnDhAKfTYvw&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&enablejsapi=1"
+      title="Background video"
+      allow="autoplay; encrypted-media"
+      allowfullscreen>
+    </iframe>
+
+    <!-- UPLOAD DROP ZONE (visible until video is set) -->
+    <div class="video-upload-zone" id="videoUploadZone">
+      <input type="file" id="videoFileInput" accept="video/mp4,video/webm,video/mov" style="display:none;">
+      <div class="vuz-inner" id="vuzInner">
+        <div class="vuz-icon">🎬</div>
+        <div class="vuz-title">Drop Your Video Here</div>
+        <div class="vuz-sub">Or click to browse — MP4, WebM, MOV supported</div>
+        <button class="vuz-btn" onclick="document.getElementById('videoFileInput').click()">📁 Choose Video File</button>
+        <div class="vuz-or">— or paste a YouTube URL below —</div>
+        <div class="vuz-yt-row">
+          <input type="text" id="ytUrlInput" class="vuz-input" placeholder="https://www.youtube.com/watch?v=...">
+          <button class="vuz-apply-btn" onclick="applyYouTubeURL()">Apply</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-video-overlay"></div>
+  <div class="hero-scanlines"></div>
+
+  <!-- REMOVE VIDEO BUTTON (shown after video is set) -->
+  <button class="video-remove-btn" id="videoRemoveBtn" style="display:none;" onclick="removeVideo()">✕ Remove Video</button>
+
+  <!-- CONTENT -->
+  <div class="hero-content">
+    <div class="hero-tag">AVAILABLE FOR HIRE</div>
+    <h1>FREIGHT <span>VA</span></h1>
+    <div class="hero-sub">& TRUCK DISPATCHER</div>
+    <p class="hero-desc">
+      Remote freight professional specializing in full-cycle shipment support — from load booking and carrier sourcing to track & trace, documentation, and billing. Trained in both broker-side operations and truck dispatching.
+    </p>
+    <div class="hero-cta">
+      <a href="mailto:moedapadap@gmail.com?subject=Discovery Call Request" class="btn-primary">📧 Book a Discovery Call</a>
+      <a href="https://wa.me/639061235035?text=Hi%20Moe!%20I%20found%20your%20portfolio%20and%20I%27d%20like%20to%20book%20a%20discovery%20call." target="_blank" class="btn-whatsapp">💬 WhatsApp Me</a>
+    </div>
+  </div>
+
+  <div class="hero-scroll-hint">Scroll</div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-number">2</div>
+    <div class="stat-label">Specializations</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">LTL</div>
+    <div class="stat-label">+ FTL Trained</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">100%</div>
+    <div class="stat-label">Remote</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">US</div>
+    <div class="stat-label">Market Focused</div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">Who I Am</div>
+  <div class="section-title">ABOUT ME</div>
+  <div class="about-layout">
+    <div class="about-photo-wrap fade-in">
+      <div class="about-photo-placeholder">
+        <div class="about-corner-tl"></div>
+        <span class="photo-icon">🖼️</span>
+        <span class="photo-label">Your Photo Here</span>
+        <span class="photo-sublabel">Replace with your image</span>
+        <div class="about-corner-br"></div>
+      </div>
+    </div>
+    <div class="about-text fade-in">
+      <h3>Hi, I'm <span>Moe</span></h3>
+      <div class="about-role">Freight VA · Truck Dispatcher · Remote Professional</div>
+      <p>I am a trained Freight Virtual Assistant and Truck Dispatcher based in the Philippines, serving US-based freight brokers, carriers, and logistics companies remotely. I completed my training through Freight Courses 101 in 2026 under Coach Rose.</p>
+      <p>I understand the full load cycle — from receiving shipment details and sourcing carriers, to booking loads, tracking in transit, collecting PODs, and closing out invoices. I bring the same precision and reliability to every load I handle.</p>
+      <p>As an independent VA, I operate my own professional business with my own equipment — meaning you get a dedicated, accountable partner, not a distracted employee.</p>
+      <div class="about-highlights">
+        <div class="highlight-item"><span>🎓</span> FC101 Certified 2026</div>
+        <div class="highlight-item"><span>🌏</span> Based in Philippines</div>
+        <div class="highlight-item"><span>🚛</span> Truck Dispatching</div>
+        <div class="highlight-item"><span>📦</span> Freight Broker VA</div>
+        <div class="highlight-item"><span>⏱️</span> Fast Turnaround</div>
+        <div class="highlight-item"><span>💼</span> Independent Business</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="section-label">What I Do</div>
+  <div class="section-title">SERVICES</div>
+  <div class="services-grid">
+
+    <div class="service-card fade-in">
+      <span class="service-icon">🚛</span>
+      <div class="service-title">TRUCK DISPATCHING</div>
+      <p class="service-desc">Full dispatching support for owner-operators and small fleets. I find the loads, negotiate the rates, and handle the paperwork so your trucks stay moving.</p>
+      <div class="service-tags">
+        <span class="tag">Load Board Search</span>
+        <span class="tag">Rate Negotiation</span>
+        <span class="tag">Driver Coordination</span>
+        <span class="tag">Ratecon</span>
+        <span class="tag">POD Collection</span>
+      </div>
+    </div>
+
+    <div class="service-card fade-in">
+      <span class="service-icon">📦</span>
+      <div class="service-title">FREIGHT BROKER VA</div>
+      <p class="service-desc">End-to-end virtual support for freight brokers. I manage the operational workload so brokers can focus on growing their business and client relationships.</p>
+      <div class="service-tags">
+        <span class="tag">TMS Data Entry</span>
+        <span class="tag">Carrier Sourcing</span>
+        <span class="tag">Load Booking</span>
+        <span class="tag">Shipment Tracking</span>
+        <span class="tag">Invoicing</span>
+      </div>
+    </div>
+
+    <div class="service-card fade-in">
+      <span class="service-icon">📄</span>
+      <div class="service-title">DOCUMENTATION</div>
+      <p class="service-desc">Accurate, organized freight documentation management. Every load properly documented from pickup to payment — no missing paperwork, no delayed invoices.</p>
+      <div class="service-tags">
+        <span class="tag">Bill of Lading</span>
+        <span class="tag">Rate Confirmation</span>
+        <span class="tag">POD Management</span>
+        <span class="tag">Invoice Prep</span>
+      </div>
+    </div>
+
+    <div class="service-card fade-in">
+      <span class="service-icon">📡</span>
+      <div class="service-title">TRACK & TRACE</div>
+      <p class="service-desc">Proactive shipment monitoring with regular check calls and real-time status updates. I keep all parties informed and handle delays before they become problems.</p>
+      <div class="service-tags">
+        <span class="tag">Check Calls</span>
+        <span class="tag">GPS Tracking</span>
+        <span class="tag">Status Updates</span>
+        <span class="tag">Delay Management</span>
+      </div>
+    </div>
+
+    <div class="service-card fade-in">
+      <span class="service-icon">🔍</span>
+      <div class="service-title">CARRIER VETTING</div>
+      <p class="service-desc">Thorough carrier verification using FMCSA SAFER to confirm active authority, valid insurance, and satisfactory safety ratings before any load is tendered.</p>
+      <div class="service-tags">
+        <span class="tag">FMCSA Verification</span>
+        <span class="tag">MC# Check</span>
+        <span class="tag">Insurance Review</span>
+        <span class="tag">Safety Rating</span>
+      </div>
+    </div>
+
+    <div class="service-card fade-in">
+      <span class="service-icon">💳</span>
+      <div class="service-title">BILLING SUPPORT</div>
+      <p class="service-desc">Invoice preparation, payment follow-ups, and accounts receivable support. I make sure your freight bills go out accurately and payments come in on time.</p>
+      <div class="service-tags">
+        <span class="tag">Invoice Creation</span>
+        <span class="tag">Payment Follow-up</span>
+        <span class="tag">Dispute Handling</span>
+        <span class="tag">AR Support</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SHIPMENT PIPELINE -->
+<section class="pipeline" id="process">
+  <div class="section-label">How I Support Your Operations</div>
+  <div class="section-title">FULL LOAD CYCLE</div>
+  <div class="pipeline-steps">
+    <div class="pipeline-step fade-in">
+      <div class="step-num">01</div>
+      <div class="step-title">Receive Load</div>
+      <div class="step-desc">Gather shipment details from shipper and enter into TMS</div>
+    </div>
+    <div class="pipeline-step fade-in">
+      <div class="step-num">02</div>
+      <div class="step-title">Quote & Source</div>
+      <div class="step-desc">Research rates, source and vet carriers via FMCSA</div>
+    </div>
+    <div class="pipeline-step fade-in">
+      <div class="step-num">03</div>
+      <div class="step-title">Book Load</div>
+      <div class="step-desc">Send rate confirmation, secure truck, update system</div>
+    </div>
+    <div class="pipeline-step fade-in">
+      <div class="step-num">04</div>
+      <div class="step-title">Track & Trace</div>
+      <div class="step-desc">Monitor transit, perform check calls, handle delays</div>
+    </div>
+    <div class="pipeline-step fade-in">
+      <div class="step-num">05</div>
+      <div class="step-title">Delivery & POD</div>
+      <div class="step-desc">Confirm delivery, collect signed POD, update records</div>
+    </div>
+    <div class="pipeline-step fade-in">
+      <div class="step-num">06</div>
+      <div class="step-title">Invoice & Close</div>
+      <div class="step-desc">Prepare invoice, attach POD, follow up on payment</div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label">Capabilities</div>
+  <div class="section-title">SKILLS & TOOLS</div>
+  <div class="skills-layout">
+    <div>
+      <div class="skill-group">
+        <div class="skill-group-title">Freight Operations</div>
+        <div class="skill-item">
+          <div class="skill-name-row"><span>Load Booking & TMS Entry</span><span class="skill-pct">90%</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width:90%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-name-row"><span>Rate Negotiation</span><span class="skill-pct">85%</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-name-row"><span>Track & Trace / Check Calls</span><span class="skill-pct">90%</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width:90%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-name-row"><span>Carrier Vetting (FMCSA)</span><span class="skill-pct">88%</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width:88%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-name-row"><span>Documentation & Compliance</span><span class="skill-pct">92%</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width:92%"></div></div>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title">VA & Admin</div>
+        <div class="skill-item">
+          <div class="skill-name-row"><span>Email & Communication Management</span><span class="skill-pct">95%</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width:95%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-name-row"><span>Data Entry & Record Keeping</span><span class="skill-pct">95%</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width:95%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-name-row"><span>Invoice Preparation & Billing</span><span class="skill-pct">85%</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="skill-group-title" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--orange);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;">Platforms & Tools</div>
+      <div class="tools-grid">
+        <div class="tool-item"><span class="tool-dot"></span>AscendTMS</div>
+        <div class="tool-item"><span class="tool-dot"></span>DAT Load Board</div>
+        <div class="tool-item"><span class="tool-dot"></span>Truckstop.com</div>
+        <div class="tool-item"><span class="tool-dot"></span>Sylectus</div>
+        <div class="tool-item"><span class="tool-dot"></span>FMCSA SAFER</div>
+        <div class="tool-item"><span class="tool-dot"></span>Estes Express</div>
+        <div class="tool-item"><span class="tool-dot"></span>Google Workspace</div>
+        <div class="tool-item"><span class="tool-dot"></span>Microsoft Office</div>
+      </div>
+      <div style="margin-top:36px;">
+        <div class="skill-group-title" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--orange);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;">Freight Knowledge</div>
+        <div class="tools-grid">
+          <div class="tool-item"><span class="tool-dot"></span>LTL / FTL / Volume LTL</div>
+          <div class="tool-item"><span class="tool-dot"></span>Freight Classes</div>
+          <div class="tool-item"><span class="tool-dot"></span>BOL / Ratecon / POD</div>
+          <div class="tool-item"><span class="tool-dot"></span>Dry Van / Flatbed / Reefer</div>
+          <div class="tool-item"><span class="tool-dot"></span>Shipper–Broker–Carrier Flow</div>
+          <div class="tool-item"><span class="tool-dot"></span>Dispute Handling</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRAINING -->
+<section style="background: var(--navy-mid);" id="training">
+  <div class="section-label">Credentials</div>
+  <div class="section-title">TRAINING & CERTIFICATION</div>
+  <div class="training-cards">
+
+    <div class="training-card fade-in">
+      <span class="training-badge">COMPLETED 2026</span>
+      <div class="training-name">FREIGHT VIRTUAL ASSISTANT</div>
+      <div class="training-school">Freight Courses 101 — Coach Rose</div>
+      <ul class="training-list">
+        <li>3-Day Freight VA Challenge</li>
+        <li>Full shipment process workflow</li>
+        <li>Rate quoting — Estes, FedEx, ArcBest</li>
+        <li>Carrier vetting and onboarding</li>
+        <li>BOL, ratecon, POD, and invoicing</li>
+        <li>Dispute handling and billing follow-up</li>
+        <li>AscendTMS hands-on practice</li>
+      </ul>
+    </div>
+
+    <div class="training-card fade-in">
+      <span class="training-badge">COMPLETED 2026</span>
+      <div class="training-name">TRUCK DISPATCHING</div>
+      <div class="training-school">Freight Courses 101 — FC101</div>
+      <ul class="training-list">
+        <li>Finding and booking loads via load boards</li>
+        <li>Rate negotiation with brokers</li>
+        <li>Route planning and schedule management</li>
+        <li>Driver communication and coordination</li>
+        <li>Paperwork — ratecons, PODs, compliance</li>
+        <li>Problem solving during transit</li>
+        <li>DAT, Truckstop, Sylectus platforms</li>
+      </ul>
+    </div>
+
+    <div class="training-card fade-in">
+      <span class="training-badge">ONGOING</span>
+      <div class="training-name">VIRTUAL ASSISTANT SERVICES</div>
+      <div class="training-school">Independent VA Business</div>
+      <ul class="training-list">
+        <li>Administrative and operational support</li>
+        <li>Data entry and research</li>
+        <li>Real estate data extraction</li>
+        <li>Client communication management</li>
+        <li>Property listing research (AU market)</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-inner">
+    <div class="contact-photo-wrap fade-in">
+      <div class="contact-photo-placeholder">
+        <div class="contact-corner-tl"></div>
+        <span class="photo-icon">🖼️</span>
+        <span class="photo-label" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--orange);letter-spacing:2px;text-transform:uppercase;">Your Photo Here</span>
+        <span class="photo-sublabel" style="font-size:11px;color:var(--muted);opacity:0.6;">Replace with your image</span>
+        <div class="contact-corner-br"></div>
+      </div>
+    </div>
+    <div class="contact-text fade-in">
+      <div class="section-label">Let's Work Together</div>
+      <div class="section-title" style="margin-bottom:24px;">BOOK A<br>DISCOVERY<br><span style="color:var(--orange);">CALL</span></div>
+      <p class="contact-note">
+        Ready to keep your freight moving? I offer a free discovery call to discuss your needs, whether you're a broker looking for VA support or a carrier needing a dedicated dispatcher. Let's talk.
+      </p>
+      <div class="contact-email-display">moedapadap@gmail.com</div>
+      <div class="contact-cta-stack">
+        <a href="mailto:moedapadap@gmail.com?subject=Discovery Call Request&body=Hi Moe, I'd like to book a discovery call to discuss your freight VA/dispatching services." class="btn-primary">📧 Email to Book a Call</a>
+        <a href="https://wa.me/639061235035?text=Hi%20Moe!%20I%20found%20your%20portfolio%20and%20I%27d%20like%20to%20book%20a%20discovery%20call%20about%20your%20freight%20services." target="_blank" class="btn-whatsapp">💬 Message on WhatsApp</a>
+        <a href="#services" class="btn-outline">📋 View My Services</a>
+      </div>
+      <div class="contact-tags">
+        <span class="tag">Remote</span>
+        <span class="tag">US Market</span>
+        <span class="tag">Freight VA</span>
+        <span class="tag">Truck Dispatcher</span>
+        <span class="tag">Available Now</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CROSS PROMO SECTION -->
+<section class="crosspromo">
+  <div class="crosspromo-inner">
+
+    <div class="crosspromo-top">
+      <div class="section-label" style="justify-content:center;">More Than Freight</div>
+      <div class="crosspromo-title">LOOKING FOR OTHER<br><span>VA SERVICES?</span></div>
+      <p class="crosspromo-sub">Freight is just one part of what I do. I am a full-service Virtual Assistant with 8+ years of experience across multiple industries. Search my name on Google or visit my main portfolio.</p>
+    </div>
+
+    <div class="crosspromo-search-box">
+      <div class="search-mock">
+        <div class="search-icon">🔍</div>
+        <div class="search-text">Search <span class="search-highlight">Moe_srvs</span> on Google</div>
+        <div class="search-pulse"></div>
+      </div>
+    </div>
+
+    <div class="crosspromo-cards">
+
+      <a href="https://moe-srvs.vercel.app/#services" target="_blank" class="xcard">
+        <div class="xcard-icon">📞</div>
+        <div class="xcard-title">Cold Calling &<br>Appointment Setting</div>
+        <div class="xcard-desc">Outbound calls, lead qualification, and follow-ups</div>
+        <div class="xcard-arrow">→</div>
+      </a>
+
+      <a href="https://moe-srvs.vercel.app/#services" target="_blank" class="xcard">
+        <div class="xcard-icon">🏠</div>
+        <div class="xcard-title">Real Estate VA</div>
+        <div class="xcard-desc">AU & US markets — off-market sourcing, CRM, agent coordination</div>
+        <div class="xcard-arrow">→</div>
+      </a>
+
+      <a href="https://moe-srvs.vercel.app/#services" target="_blank" class="xcard">
+        <div class="xcard-icon">🗂️</div>
+        <div class="xcard-title">Executive &<br>Admin Support</div>
+        <div class="xcard-desc">Email, calendar, travel arrangements, documents</div>
+        <div class="xcard-arrow">→</div>
+      </a>
+
+      <a href="https://moe-srvs.vercel.app/#services" target="_blank" class="xcard">
+        <div class="xcard-icon">📱</div>
+        <div class="xcard-title">Social Media<br>Management</div>
+        <div class="xcard-desc">Instagram, LinkedIn, Facebook — content & engagement</div>
+        <div class="xcard-arrow">→</div>
+      </a>
+
+      <a href="https://moe-srvs.vercel.app/#services" target="_blank" class="xcard">
+        <div class="xcard-icon">🎨</div>
+        <div class="xcard-title">Graphics &<br>Video Editing</div>
+        <div class="xcard-desc">Canva designs, Filmora & CapCut reels creation</div>
+        <div class="xcard-arrow">→</div>
+      </a>
+
+      <a href="https://moe-srvs.vercel.app/#services" target="_blank" class="xcard">
+        <div class="xcard-icon">🤝</div>
+        <div class="xcard-title">Customer<br>Service</div>
+        <div class="xcard-desc">Inbound/outbound support, billing & troubleshooting</div>
+        <div class="xcard-arrow">→</div>
+      </a>
+
+    </div>
+
+    <div class="crosspromo-cta-row">
+      <a href="https://moe-srvs.vercel.app/" target="_blank" class="btn-primary">🌐 Visit My Full Portfolio — moe-srvs.vercel.app</a>
+      <a href="https://moe-srvs.vercel.app/#portfolio" target="_blank" class="btn-outline">🖼️ View My Work Gallery</a>
+      <a href="https://moe-srvs.vercel.app/#testimonials" target="_blank" class="btn-outline">⭐ Read Client Reviews</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">MOE // FVA</div>
+  <div>Freight VA & Truck Dispatcher · Remote · Philippines</div>
+  <div style="display:flex;gap:20px;align-items:center;">
+    <a href="mailto:moedapadap@gmail.com" style="color:var(--muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--orange)'" onmouseout="this.style.color='var(--muted)'">moedapadap@gmail.com</a>
+    <span style="opacity:0.3;">|</span>
+    <a href="https://wa.me/639061235035" target="_blank" style="color:var(--muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#25D366'" onmouseout="this.style.color='var(--muted)'">WhatsApp</a>
+    <span style="opacity:0.3;">|</span>
+    <a href="https://moe-srvs.vercel.app/#portfolio" target="_blank" style="color:var(--muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--orange)'" onmouseout="this.style.color='var(--muted)'">Moe_srvs</a>
+  </div>
+</footer>
+
+<script>
+  // Scroll fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => { entry.target.classList.add('visible'); }, i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // ── VIDEO BACKGROUND MANAGER ──────────────────────────────
+  const zone      = document.getElementById('videoUploadZone');
+  const vuzInner  = document.getElementById('vuzInner');
+  const heroVideo = document.getElementById('heroVideo');
+  const heroYT    = document.getElementById('heroYT');
+  const fileInput = document.getElementById('videoFileInput');
+  const removeBtn = document.getElementById('videoRemoveBtn');
+
+  // Load saved video from localStorage
+  const savedVideo = localStorage.getItem('heroVideoURL');
+  const savedYT    = localStorage.getItem('heroYouTubeID');
+  if (savedVideo) {
+    applyLocalVideo(savedVideo);
+  } else if (savedYT) {
+    applyYouTubeID(savedYT);
+  }
+
+  // File input change
+  fileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    localStorage.setItem('heroVideoURL', url);
+    localStorage.removeItem('heroYouTubeID');
+    applyLocalVideo(url);
+  });
+
+  // Drag and drop
+  vuzInner.addEventListener('dragover', (e) => { e.preventDefault(); vuzInner.classList.add('drag-over'); });
+  vuzInner.addEventListener('dragleave', () => vuzInner.classList.remove('drag-over'));
+  vuzInner.addEventListener('drop', (e) => {
+    e.preventDefault();
+    vuzInner.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('video/')) {
+      const url = URL.createObjectURL(file);
+      localStorage.setItem('heroVideoURL', url);
+      localStorage.removeItem('heroYouTubeID');
+      applyLocalVideo(url);
+    }
+  });
+
+  function applyLocalVideo(url) {
+    document.getElementById('heroVideoSrc').src = url;
+    heroVideo.load();
+    heroVideo.style.display = 'block';
+    heroYT.style.display = 'none';
+    zone.classList.add('hidden');
+    removeBtn.style.display = 'block';
+  }
+
+  function applyYouTubeURL() {
+    const input = document.getElementById('ytUrlInput').value.trim();
+    let id = '';
+    // Extract video ID from various YouTube URL formats
+    const match = input.match(/(?:v=|youtu\.be\/|embed\/)([a-zA-Z0-9_-]{11})/);
+    if (match) { id = match[1]; }
+    else if (input.length === 11) { id = input; } // raw ID
+    if (!id) { alert('Could not find a valid YouTube video ID. Please paste a full YouTube URL.'); return; }
+    localStorage.setItem('heroYouTubeID', id);
+    localStorage.removeItem('heroVideoURL');
+    applyYouTubeID(id);
+  }
+
+  function applyYouTubeID(id) {
+    heroYT.src = `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3`;
+    heroYT.style.display = 'block';
+    heroVideo.style.display = 'none';
+    zone.classList.add('hidden');
+    removeBtn.style.display = 'block';
+  }
+
+  function removeVideo() {
+    localStorage.removeItem('heroVideoURL');
+    localStorage.removeItem('heroYouTubeID');
+    heroVideo.style.display = 'none';
+    heroVideo.src = '';
+    heroYT.src = 'about:blank';
+    zone.classList.remove('hidden');
+    removeBtn.style.display = 'none';
+  }
+</script>
+
+</body>
+</html>
